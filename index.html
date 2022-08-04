@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Slicer</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/CSS/normalize.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+
+        .cubes {
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            background-color: orange;
+            border-radius: 10%;
+            position: relative;
+            animation-name: testTwo;
+            animation-duration: 5s;
+            animation-iteration-count: infinite;
+            box-shadow: 5px 10px rgba(85, 85, 85, 0.5);
+
+
+        }
+
+        @keyframes testTwo {
+            /*0% {
+                transform: rotate(360deg);
+            }*/
+            100% {
+                bottom: 0;
+                transform: rotate(-360deg);
+                /*transform: translateY(20);*/
+            }
+        }
+
+        .flex-container {
+            display: flex;
+        }
+
+
+        .box {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            /*animation-name: falling;*/
+            animation: rotate 2.5s infinite linear;
+            /*animation-iteration-count: infinite;
+            animation-timing-function: linear;*/
+            background-color: orange;
+            border-radius: 10%;
+            box-shadow: 5px 10px rgba(85, 85, 85, 0.5);
+        }
+
+
+        .box-1 {
+            background-color: lightblue;
+            right: 60vw;
+            animation-name: falling1;
+            animation-duration: 6s;
+
+        }
+
+        @keyframes falling1 {
+
+            0% {
+                top: -10vh;
+            }
+            100% {
+                top: 90vh;
+            }
+        }
+
+        .box-2 {
+            background-color: lightgreen;
+            right: 70vw;
+            animation-name: falling;
+            animation-duration: 8s;
+        }
+
+        @keyframes falling {
+            0% {
+                top: -20vh;
+            }
+            100% {
+                top: 90vh;
+            }
+        }
+
+        .box-3 {
+            background-color: lightcoral;
+            right: 10vw;
+            animation-name: falling1;
+            animation-duration: 5s;
+        }
+
+        .box-4 {
+            background-color: lightgoldenrodyellow;
+            right: 20vw;
+            animation-name: falling;
+            animation-duration: 4s;
+        }
+
+        .box-5 {
+            background-color: lightsalmon;
+            right: 40vw;
+            animation-name: falling1;
+            animation-duration: 2s;
+        }
+
+        .box-6 {
+            background-color: lightcyan;
+            right: 90vw;
+            animation-name: falling;
+            animation-duration: 2s;
+        }
+
+        .trail { /* className for the trail elements */
+            position: absolute;
+            height: 4px;
+            width: 4px;
+            border-radius: 1px;
+            background: white;
+        }
+
+        #timer {
+            font-size: 25px;
+            position: absolute;
+            left: 1400px;
+            font-family: 'Oswald', sans-serif;
+            color: #0062a3;
+        }
+
+
+    </style>
+</head>
+<body style="overflow: hidden;">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light shadow p-3 rounded" style="background-color: #c5edff; z-index: 1">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-3 fw-bold" href="#" style="color: #0062a3; font-family: 'Oswald', sans-serif;">
+                THE SLICER
+            </a>
+
+        </div>
+        <div>
+            <a class="navbar-brand fs-3 fw-bold ps-5" href="#">SCORE - <span id="score">0</span></a>
+        </div>
+
+        <div id="timer">
+            <span id="hours">00:</span>
+            <span id="mins">00:</span>
+            <span id="seconds">00</span>
+        </div>
+
+    </nav>
+</header>
+<main style="background-color: #3c80ab; width: 100vw; height: 100vh" id="board">
+    <div class="box box-1" id="b1"></div>
+    <div class="box box-2"></div>
+    <div class="box box-3"></div>
+    <div class="box box-4"></div>
+    <div class="box box-5"></div>
+    <div class="box box-6"></div>
+</main>
+
+
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/jQuerry/jquery-3.6.0.min.js"></script>
+<script>
+    startTimer();
+
+
+    function scoreDisply() {
+        var n = parseInt($("#score").text());
+        n = n + 1;
+        $("#score").text(n);
+
+    }
+
+
+    //Timer
+    var hours = 0;
+    var mins = 0;
+    var seconds =0;
+
+    function startTimer() {
+
+        timex = setTimeout(function () {
+            seconds++;
+            if (seconds > 59) {
+                seconds = 0;
+                mins++;
+                if (mins > 59) {
+                    mins = 0;
+                    hours++;
+                    if (hours < 10) {
+                        $("#hours").text('0' + hours + ':')
+                    } else $("#hours").text(hours + ':');
+                }
+
+                if (mins < 10) {
+                    $("#mins").text('0' + mins + ':');
+                } else $("#mins").text(mins + ':');
+            }
+            if (seconds < 10) {
+                $("#seconds").text('0' + seconds);
+            } else {
+                $("#seconds").text(seconds);
+            }
+
+
+            startTimer();
+        }, 1000);
+    }
+
+
+    var rock = document.createElement("div");
+    rock.style.animationDuration = "15s";
+
+    // dots is an array of Dot objects,
+    // mouse is an object used to track the X and Y position
+    // of the mouse, set with a mousemove event listener below
+    var dots = [],
+        mouse = {
+            x: 0,
+            y: 0
+        };
+
+    // The Dot object used to scaffold the dots
+    var Dot = function () {
+        this.x = 0;
+        this.y = 0;
+        this.node = (function () {
+            var n = document.createElement("div");
+            n.className = "trail";
+            n.onclick = scoreDisply;
+            document.body.appendChild(n);
+            return n;
+        }());
+    };
+    // The Dot.prototype.draw() method sets the position of
+    // the object's <div> node
+    Dot.prototype.draw = function () {
+        this.node.style.left = this.x + "px";
+        this.node.style.top = this.y + "px";
+    };
+
+    // Creates the Dot objects, populates the dots array
+    for (var i = 0; i < 12; i++) {
+        var d = new Dot();
+        dots.push(d);
+    }
+
+    // This is the screen redraw function
+    function draw() {
+        // Make sure the mouse position is set everytime
+        // draw() is called.
+        var x = mouse.x,
+            y = mouse.y;
+
+        // This loop is where all the 90s magic happens
+        dots.forEach(function (dot, index, dots) {
+            var nextDot = dots[index + 1] || dots[0];
+
+            dot.x = x;
+            dot.y = y;
+            dot.draw();
+            x += (nextDot.x - dot.x) * .2;
+            y += (nextDot.y - dot.y) * .2;
+
+        });
+    }
+
+    addEventListener("mousemove", functrail);
+
+    function functrail(event) {
+        //event.preventDefault();
+        mouse.x = event.pageX;
+        mouse.y = event.pageY;
+
+    }
+
+
+    // animate() calls draw() then recursively calls itself
+    // everytime the screen repaints via requestAnimationFrame().
+    function animate() {
+        draw();
+        requestAnimationFrame(animate);
+    }
+
+    // And get it started by calling animate().
+    animate();
+
+    //----------------------------------------------------------
+
+
+</script>
+</body>
+</html>
